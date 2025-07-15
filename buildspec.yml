@@ -5,8 +5,8 @@ phases:
     commands:
       - echo Logging in to DockerHub...
       - docker login -u $DOCKERHUB_USER -p $DOCKERHUB_PASS
-      - REPOSITORY_URI="docker.io/vineeth837/frontend-project"
-      - CONTAINER_NAME="frontend-container"
+      - REPOSITORY_URI="docker.io/vineeth837/backend-project"
+      - CONTAINER_NAME="backend-container"
       - IMAGE_TAG="latest"
   build:
     commands:
@@ -16,8 +16,11 @@ phases:
   post_build:
     commands:
       - echo Build completed on `date`
+      - echo Pushing Docker image to $REPOSITORY_URI...
       - docker push $REPOSITORY_URI:$IMAGE_TAG
-      - echo Writing image definitions file...
-      - printf '[{"name":"'$CONTAINER_NAME'","imageUri":"%s"}]' $REPOSITORY_URI:$IMAGE_TAG > builddefinition.json
+      - echo Writing imagedefinitions.json file...
+      - printf '[{"name":"%s","imageUri":"%s"}]' $CONTAINER_NAME $REPOSITORY_URI:$IMAGE_TAG > imagedefinitions.json
+
 artifacts:
-    files: builddefinition.json
+  files:
+    - imagedefinitions.json
